@@ -1,15 +1,32 @@
-let servicios = [
-  { id: 1, nombre: "Corte de cabello", precio: 25000, duracion_min: 30 },
-  { id: 2, nombre: "Arreglo de barba", precio: 15000, duracion_min: 20 },
-  { id: 3, nombre: "Corte + Barba", precio: 35000, duracion_min: 45 },
-  { id: 4, nombre: "Tinte", precio: 40000, duracion_min: 60 },
-  { id: 5, nombre: "Diseño de cejas", precio: 10000, duracion_min: 15 }
-];
+const Servicio = require('../src/models/Servicio');
 
-const getAllServicios = (req, res) => {
-  res.status(200).json(servicios);
+const getAllServicios = async (req, res) => {
+  try {
+    const servicios = await Servicio.findAll();
+    res.status(200).json(servicios);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const createServicio = async (req, res) => {
+  try {
+    const { nombre, categoria, descripcion, precio, duracion_minutos, popular } = req.body;
+    const nuevoServicio = await Servicio.create({
+      nombre,
+      categoria,
+      descripcion,
+      precio,
+      duracion_minutos,
+      popular,
+    });
+    res.status(201).json(nuevoServicio);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
 };
 
 module.exports = {
-  getAllServicios
+  getAllServicios,
+  createServicio,
 };
